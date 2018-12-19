@@ -1,5 +1,7 @@
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -11,8 +13,37 @@ import java.util.Set;
  * Handles most of the added data processing.
  */
 public class Chordinator {
+	Map<Integer, String> intervals;
 	
-	public Chordinator() {}
+	public Chordinator() {
+		intervals = new HashMap<Integer, String>();
+		populateIntervals(intervals);
+	}
+
+	/**
+	 * populates given map with hard coded values for interval data.
+	 */
+	private void populateIntervals(Map<Integer, String> map) {
+		map.put(1, "m2");
+		map.put(2, "M2");
+		map.put(3, "m3");
+		map.put(4, "M3");
+		map.put(5, "P4");
+		map.put(6, "Tri");
+		map.put(7, "P5");
+		map.put(8, "m6");
+		map.put(9, "M6");
+		map.put(10, "m7");
+		map.put(11, "M7");
+		map.put(12, "Octave");
+		map.put(13, "m9");
+		map.put(14, "M9");
+		map.put(15, "m10");
+		map.put(16, "M10");
+		map.put(17, "P11");
+		map.put(18, "dim12");
+		map.put(19, "P12");
+	}
 
 	/**
 	 * @return

@@ -1,3 +1,5 @@
+import java.util.Comparator;
+
 /**
  *
 **/
@@ -5,28 +7,35 @@
 public class Note {
 	int track;
 	int time;
+	String lineType;
 	int channel;
-	boolean isOn;
 	int note;
-	int moddedValue;
 	int velocity;
-	
+
+	int relativePitch;
 	double intervalUp;
 	String chord;
 		
+	public Note(int track, int time, String lineType, int channel,
+					int note, int velocity) {
+		this(track, time, lineType, channel, note, velocity, 0, "");
+	}
+	
 	/*
 	 * POST: construct a Node.
 	 * TODO(?): Do I need other constructors? Maybe.
 	 */
-	public Note(int track, int time, int channel, boolean isOn, 
+	public Note(int track, int time, String lineType, int channel, 
 					int note, int velocity, double intervalUp, String chord) {
 		
 		this.track = track;
 		this.time = time;
 		this.channel = channel;
-		this.isOn = isOn;
+		this.lineType = lineType;
 		this.note = note;
-		this.moddedValue = (note + 5) % 12; //makes C == 1 (music convention) and each half step +1
+		this.relativePitch = (note) % 12;
+		//C == 60, so this makes C == 0 (music convention)
+		//Note that full step = 2 and half step = 1
 		this.velocity = velocity;
 		this.intervalUp = intervalUp;
 		this.chord = chord;
@@ -35,16 +44,17 @@ public class Note {
 	/*
 	 * POST: prints out the entire contents to a string.
 	 */
-	public String toString() {
-		String noteOn = "On";
-		if (!isOn) noteOn = "Off";
+	public String defaultToString() {
 		
 		return track + "," 
 				+ time + "," 
-				+ noteOn +"," 
+				+ lineType +"," 
+				+ channel + ","
 				+ note + "," 
-				+ velocity + "," 
-				+ intervalUp + "," 
-				+ chord;
+				+ velocity + ",";
 	}
+	
+
+	
 }
+

@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Alex Zhou for Hack Lodge 2018
@@ -49,7 +52,7 @@ public class TheJazzMachine {
 		}
 
 		//temp = processData(temp); //add in further info (chords)
-		//data = transpose(data); //transpose data 11 times
+		data = transpose(data); //transpose data 11 times
 		
 		//Writing operations
 		System.out.print("Output file name? ");
@@ -81,13 +84,11 @@ public class TheJazzMachine {
 	 * POST: rounds number x to the nearest 'round'
 	 */
 	private static int roundToNearest(int x, int round) {
-		System.out.print("    rounding " + x + " to ");
 		int changed = x;
 		int lowBound = (x / TIME_INCREMENT) * TIME_INCREMENT;
 		int highBound = lowBound + TIME_INCREMENT;
 		int low = Math.abs(x - lowBound);
 		int high = Math.abs(x - highBound);
-		
 		
 		if (low < high) {
 			changed = lowBound;
@@ -95,7 +96,6 @@ public class TheJazzMachine {
 			changed = highBound;
 		}
 		
-		System.out.println(changed);
 		return changed;
 	}
 
@@ -111,13 +111,18 @@ public class TheJazzMachine {
 		System.out.print("reading in data...");
 		String s = reader.readLine();
 		while (s != null) {
-			String[] parts = s.split(",");
+			String delimiters = "((, )|,)";
+			String[] parts = s.split(delimiters);
 			String note = parts[2];
-			if (note.equals(" Note_on_c")) { 
-				Note n = new Note(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), 
-						parts[2], Integer.parseInt(parts[3]), 
-						Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
-				thisSong.add(n);
+			try {
+				if (note.equals("Note_on_c")) { //NOT SURE IF I WANT TO GET RID OF NOTE OFF.
+					Note n = new Note(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), 
+							parts[2], Integer.parseInt(parts[3]), 
+							Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
+					thisSong.add(n);
+				}
+			} catch (Exception e) {
+				System.out.println(e.getStackTrace());
 			}
 			
             s = reader.readLine();
@@ -169,10 +174,36 @@ public class TheJazzMachine {
 		//writing out.
         System.out.print("writing out data...");
         
-        
+        Set<Note> isOn = new TreeSet<Note>();
+        int trueTime = 0;
         while (data.size() > 0) {
-			writer.write(data.remove().defaultToString());
-			writer.newLine();
+        	int peekTime = data.peek().time; 
+        	//need to get around nullpointer error from removing, then checking peek;
+        	
+        	while (trueTime > peekTime) {
+        		//System.out.println("peek: " + peekTime + " vs. true: " + trueTime);
+        		
+        		if (!data.isEmpty()) {
+        			isOn.add(data.remove());
+        			if (!data.isEmpty()) peekTime = data.peek().time;
+        		}
+        		else peekTime = Integer.MAX_VALUE;
+        	}     	
+            
+        	if (!isOn.isEmpty()) {
+        		//System.out.println("There are currently " + isOn.size() + " in isOn");
+        		Iterator<Note> itr = isOn.iterator();
+        		while (itr.hasNext()) {
+        			Note n = itr.next();
+        			if (n.time + n.velocity < trueTime) itr.remove();
+        			else {
+        				writer.write(n.note + " ");
+        			}
+        		}
+        	}
+        	
+        	writer.newLine();
+            trueTime += TIME_INCREMENT;
         }
         System.out.println("...done");
 	}

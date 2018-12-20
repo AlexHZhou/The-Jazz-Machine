@@ -40,19 +40,20 @@ public class FileSorter {
 		
 		//Reading operations
 		
-		System.out.print("Enter name of csv file: ");
+		System.out.print("Enter name of txt file: ");
 		String name = scan.next();
-		BufferedReader reader = new BufferedReader(new FileReader(filePath + "/Generated CSV Files/" + name));
+		BufferedReader reader = new BufferedReader(new FileReader(filePath + "/Generated Text Files/" + name));
 		List<Note> temp = read(reader);
 		reader.close();
 		
 		Collections.sort(temp, new TimeComparator());
 		data.addAll(temp);
-		
+		System.out.println("done. data contains " + data.size() + " elements.");
+        
 		//Writing operations
 		System.out.print("Output file name? ");
 		String outputFileName = scan.next();
-		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath + "/Generated CSV Files/" + outputFileName));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath + "/Generated Text Files/" + outputFileName));
 		write(writer);
 		writer.close();
 		
@@ -78,6 +79,7 @@ public class FileSorter {
 										parts[2], Integer.parseInt(parts[3]), 
 										Integer.parseInt(parts[4]), Integer.parseInt(parts[5]));
 		            temp.add(n);
+		            System.out.println("added " + n.note + " to temp.");
 				} catch (Exception e) {
 					System.out.println(e.getStackTrace());
 				}
@@ -86,7 +88,6 @@ public class FileSorter {
         }
 		System.out.println("temp now holds " + temp.size() + " elements");
       
-        System.out.println("done. data contains " + data.size() + " elements.");
         
         return temp;
 	}

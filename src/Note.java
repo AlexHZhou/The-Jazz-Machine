@@ -4,7 +4,7 @@ import java.util.Comparator;
  *
 **/
 
-public class Note {
+public class Note implements Comparable<Note>{
 	int track;
 	int time;
 	String lineType;
@@ -54,7 +54,9 @@ public class Note {
 				+ velocity + ",";
 	}
 	
-
+	public int compareTo(Note other) {
+		return this.note - other.note;
+	}
 	
 }
 
